@@ -8,7 +8,8 @@ import 'package:flutter_star_prnt/flutter_star_prnt.dart';
 enum StarEmulation { StarPRNT, StarLine, StarGraphic }
 
 class StarPrinter extends Printer {
-  StarPrinter({StarEmulation emulation = StarEmulation.StarGraphic, int width: 580}) {
+  StarPrinter(
+      {StarEmulation emulation = StarEmulation.StarGraphic, int width = 580}) {
     this._emulation = EnumToString.convertToString(emulation);
     this._width = width;
   }
@@ -17,7 +18,7 @@ class StarPrinter extends Printer {
   late final int _width;
   late final String? _selectedPrinter;
 
-  static DiscoverResult<PortInfo> discoverStarPrinter() async {
+  static Future<List<PrinterDiscovered<PortInfo>>> discoverStarPrinter() async {
     return (await StarPrnt.portDiscovery(StarPortType.All))
         .map((e) => PrinterDiscovered(
               name: e.modelName ?? 'Star Printer',
@@ -34,12 +35,21 @@ class StarPrinter extends Printer {
   @override
   Future<bool> image(Uint8List bytes, {int threshold = 150}) async {
     if (this._selectedPrinter == null) {
-      throw new Exception("No printer available, please connect before sending.");
+      throw new Exception(
+          "No printer available, please connect before sending.");
     }
     final commands = PrintCommands();
-    commands.appendBitmapByte(byteData: bytes, width: this._width, diffusion: true, bothScale: true, alignment: StarAlignmentPosition.Center);
+    commands.appendBitmapByte(
+        byteData: bytes,
+        width: this._width,
+        diffusion: true,
+        bothScale: true,
+        alignment: StarAlignmentPosition.Center);
     commands.appendCutPaper(StarCutPaperAction.PartialCutWithFeed);
-    final result = await StarPrnt.sendCommands(portName: this._selectedPrinter!, emulation: this._emulation, printCommands: commands);
+    final result = await StarPrnt.sendCommands(
+        portName: this._selectedPrinter!,
+        emulation: this._emulation,
+        printCommands: commands);
     return result.isSuccess;
   }
 
@@ -48,7 +58,10 @@ class StarPrinter extends Printer {
     final commands = PrintCommands();
     commands.openCashDrawer(1);
     commands.openCashDrawer(2);
-    final result = await StarPrnt.sendCommands(portName: this._selectedPrinter!, emulation: this._emulation, printCommands: commands);
+    final result = await StarPrnt.sendCommands(
+        portName: this._selectedPrinter!,
+        emulation: this._emulation,
+        printCommands: commands);
     return result.isSuccess;
   }
 
