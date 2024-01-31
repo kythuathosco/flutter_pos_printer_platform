@@ -19,7 +19,7 @@ Future<DiscoverResult<StarPrinterInfo>> discoverStarPrinter() async {
   if (Platform.isAndroid || Platform.isIOS) {
     return (await StarPrnt.portDiscovery(StarPortType.All))
         .map((e) => PrinterDiscovered<StarPrinterInfo>(
-              name: e?.modelName ?? 'Star Printer',
+              name: e.modelName ?? 'Star Printer',
               detail: e,
             ))
         .toList();
