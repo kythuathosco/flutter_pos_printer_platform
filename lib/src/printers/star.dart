@@ -48,7 +48,7 @@ class StarPrinter extends Printer {
         alignment: StarAlignmentPosition.Center);
     commands.appendCutPaper(StarCutPaperAction.PartialCutWithFeed);
     final result = await StarPrnt.sendCommands(
-        portName: this._selectedPrinter!,
+        portName: this._selectedPrinter,
         emulation: this._emulation,
         printCommands: commands);
     return result.isSuccess;
